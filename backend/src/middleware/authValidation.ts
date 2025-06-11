@@ -37,9 +37,9 @@ export const validateLogin = [
   },
 ];
 
+// authValidation.ts
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // Get token from header
     const authHeader = req.headers['authorization'];
     console.log('Auth Header:', authHeader);
     const token = authHeader && authHeader.split(' ')[1];
@@ -50,11 +50,9 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
       return;
     }
 
-    // Verify token
     const decoded = verifyToken(token) as { id: string; email: string };
     console.log('Decoded token:', decoded);
 
-    // Get restaurant from database
     const restaurant = await Restaurant.findById(decoded.id);
     console.log('Found restaurant:', restaurant);
 
@@ -64,11 +62,9 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     }
 
     // Check if the current path is subscription-related
-    const isSubscriptionEndpoint = req.path.includes('/subscription/') || 
-                                 req.path.includes('/activate') || 
-                                 req.path.includes('/subscribe');
+    const isSubscriptionEndpoint = req.originalUrl.includes('/subscription/');
     console.log('Is subscription endpoint:', isSubscriptionEndpoint);
-    console.log('Current path:', req.path);
+    console.log('Current path:', req.originalUrl);
 
     // Check subscription status
     console.log('Restaurant subscription status:', restaurant.subscription.status);
@@ -77,7 +73,6 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
       return;
     }
 
-    // Add restaurant to request object
     req.restaurant = restaurant;
     next();
   } catch (error) {
