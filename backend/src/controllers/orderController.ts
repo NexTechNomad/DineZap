@@ -87,7 +87,14 @@ export const getRestaurantOrders = async (
     const { id } = req.params;
     const { status, startDate, endDate } = req.query;
     const query: any = { restaurantId: id };
-    if (status) query.status = status;
+    const validStatuses = ["pending", "cooking", "ready", "served"]; // Define valid statuses
+    if (status) {
+      if (typeof status !== "string" || !validStatuses.includes(status)) {
+        res.status(400).json({ message: "Invalid status value" });
+        return;
+      }
+      query.status = status;
+    }
     if (startDate && endDate) {
       query.createdAt = {
         $gte: new Date(startDate as string),
