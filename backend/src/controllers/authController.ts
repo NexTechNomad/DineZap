@@ -10,7 +10,12 @@ export const registerRestaurant = async (
   try {
     const { name, email, password, phone, address } = req.body;
 
-    const existingRestaurant = await Restaurant.findOne({ email });
+    if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      res.status(400).json({ message: "Invalid email format" });
+      return;
+    }
+
+    const existingRestaurant = await Restaurant.findOne({ email: { $eq: email } });
     if (existingRestaurant) {
       res.status(400).json({ message: "Restaurant already exists" });
       return;
