@@ -1,100 +1,43 @@
-If a database query (such as a SQL or NoSQL query) is built from user-provided data without sufficient sanitization, a malicious user may be able to run malicious database queries.
+Directly incorporating user input in the URL of an outgoing HTTP request can enable a request forgery attack, in which the request is altered to target an unintended API endpoint or resource. If the server performing the request is connected to an internal network, this can give an attacker the means to bypass the network boundary and make requests against internal services. A forged request may perform an unintended action on behalf of the attacker, or cause information leak if redirected to an external server or if the request response is fed back to the user. It may also compromise the server making the request, if the request response is handled in an unsafe way.
 
 Recommendation
-Most database connector libraries offer a way of safely embedding untrusted data into a query by means of query parameters or prepared statements.
+Restrict user inputs in the URL of an outgoing request, in particular:
 
-For NoSQL queries, make use of an operator like MongoDB's $eq to ensure that untrusted data is interpreted as a literal value and not as a query object. Alternatively, check that the untrusted data is a literal value and not a query object before using it in a query.
-
-For SQL queries, use query parameters or prepared statements to embed untrusted data into the query string, or use a library like sqlstring to escape untrusted data.
-
+Avoid user input in the hostname of the URL. Pick the hostname from an allow-list instead of constructing it directly from user input.
+Take care when user input is part of the pathname of the URL. Restrict the input so that path traversal ("../") cannot be used to redirect the request to an unintended endpoint.
 Example
-In the following example, assume the function handler is an HTTP request handler in a web application, whose parameter req contains the request object.
+The following example shows an HTTP request parameter being used directly in the URL of a request without validating the input, which facilitates an SSRF attack. The request http.get(...) is vulnerable since attackers can choose the value of target to be anything they want. For instance, the attacker can choose "internal.example.com/#" as the target, causing the URL used in the request to be "https://internal.example.com/#.example.com/data".
 
-The handler constructs an SQL query string from user input and executes it as a database query using the pg library. The user input may contain quote characters, so this code is vulnerable to a SQL injection attack.
+A request to https://internal.example.com may be problematic if that server is not meant to be directly accessible from the attacker's machine.
 
-const app = require("express")(),
-      pg = require("pg"),
-      pool = new pg.Pool(config);
+import http from 'http';
 
-app.get("search", function handler(req, res) {
-  // BAD: the category might have SQL special characters in it
-  var query1 =
-    "SELECT ITEM,PRICE FROM PRODUCT WHERE ITEM_CATEGORY='" +
-    req.params.category +
-    "' ORDER BY PRICE";
-  pool.query(query1, [], function(err, results) {
-    // process results
-  });
+const server = http.createServer(function(req, res) {
+    const target = new URL(req.url, "http://example.com").searchParams.get("target");
+
+    // BAD: `target` is controlled by the attacker
+    http.get('https://' + target + ".example.com/data/", res => {
+        // process request response ...
+    });
+
 });
-To fix this vulnerability, we can use query parameters to embed the user input into the query string. In this example, we use the API offered by the pg Postgres database connector library, but other libraries offer similar features. This version is immune to injection attacks.
+One way to remedy the problem is to use the user input to select a known fixed string before performing the request:
 
-const app = require("express")(),
-      pg = require("pg"),
-      pool = new pg.Pool(config);
+import http from 'http';
 
-app.get("search", function handler(req, res) {
-  // GOOD: use parameters
-  var query2 =
-    "SELECT ITEM,PRICE FROM PRODUCT WHERE ITEM_CATEGORY=$1 ORDER BY PRICE";
-  pool.query(query2, [req.params.category], function(err, results) {
-    // process results
-  });
-});
-Alternatively, we can use a library like sqlstring to escape the user input before embedding it into the query string:
+const server = http.createServer(function(req, res) {
+    const target = new URL(req.url, "http://example.com").searchParams.get("target");
 
-const app = require("express")(),
-      pg = require("pg"),
-      SqlString = require('sqlstring'),
-      pool = new pg.Pool(config);
+    let subdomain;
+    if (target === 'EU') {
+        subdomain = "europe"
+    } else {
+        subdomain = "world"
+    }
 
-app.get("search", function handler(req, res) {
-  // GOOD: the category is escaped using mysql.escape
-  var query1 =
-    "SELECT ITEM,PRICE FROM PRODUCT WHERE ITEM_CATEGORY='" +
-    SqlString.escape(req.params.category) +
-    "' ORDER BY PRICE";
-  pool.query(query1, [], function(err, results) {
-    // process results
-  });
-});
-Example
-In the following example, an express handler attempts to delete a single document from a MongoDB collection. The document to be deleted is identified by its _id field, which is constructed from user input. The user input may contain a query object, so this code is vulnerable to a NoSQL injection attack.
+    // GOOD: `subdomain` is controlled by the server
+    http.get('https://' + subdomain + ".example.com/data/", res => {
+        // process request response ...
+    });
 
-const express = require("express");
-const mongoose = require("mongoose");
-const Todo = mongoose.model(
-  "Todo",
-  new mongoose.Schema({ text: { type: String } }, { timestamps: true })
-);
-
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.delete("/api/delete", async (req, res) => {
-  let id = req.body.id;
-
-  await Todo.deleteOne({ _id: id }); // BAD: id might be an object with special properties
-
-  res.json({ status: "ok" });
-});
-To fix this vulnerability, we can use the $eq operator to ensure that the user input is interpreted as a literal value and not as a query object:
-
-app.delete("/api/delete", async (req, res) => {
-  let id = req.body.id;
-  await Todo.deleteOne({ _id: { $eq: id } }); // GOOD: using $eq operator for the comparison
-
-  res.json({ status: "ok" });
-});
-Alternatively check that the user input is a literal value and not a query object before using it:
-
-app.delete("/api/delete", async (req, res) => {
-  let id = req.body.id;
-  if (typeof id !== "string") {
-    res.status(400).json({ status: "error" });
-    return;
-  }
-  await Todo.deleteOne({ _id: id }); // GOOD: id is guaranteed to be a string
-
-  res.json({ status: "ok" });
 });
