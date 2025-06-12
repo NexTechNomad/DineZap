@@ -62,7 +62,16 @@ export const updateRestaurant = async (
     }
 
     // Now proceed with the update
-    const restaurant = await Restaurant.findByIdAndUpdate(id, req.body, {
+    // Define allowed fields for update
+    const allowedFields = ["name", "email", "phone", "address", "slug", "settings", "subscription"];
+    const sanitizedBody = Object.keys(req.body)
+      .filter(key => allowedFields.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = req.body[key];
+        return obj;
+      }, {});
+
+    const restaurant = await Restaurant.findByIdAndUpdate(id, sanitizedBody, {
       new: true,
     });
     if (!restaurant) {
