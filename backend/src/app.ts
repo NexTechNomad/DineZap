@@ -46,7 +46,7 @@ app.post(
       const event = JSON.parse(req.body.toString());
       if (event.event === "charge.success") {
         const { reference, metadata } = event.data;
-        const restaurant = await Restaurant.findById(metadata.restaurantId);
+        const restaurant = await Restaurant.findOne({ _id: { $eq: metadata.restaurantId } });
         if (!restaurant) {
           res.status(404).json({ message: "Restaurant not found" });
           return;
