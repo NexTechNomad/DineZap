@@ -249,6 +249,7 @@ export default function HeroSection() {
       </div>
 
       {/* Support Logos */}
+      {/* Support Logos */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -258,16 +259,39 @@ export default function HeroSection() {
         <p className="mb-6 md:mb-8 text-center text-sm md:text-base font-medium uppercase text-muted-foreground text-main-slateGray">
           Trusted By Leading Brands
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 grayscale py-6 md:py-8 px-4 max-w-7xl mx-auto">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <motion.img
-              key={i}
-              whileHover={{ scale: 1.1, filter: "grayscale(0)" }}
-              src={`/partners/partner-${i}.png`}
-              alt="Support Logo"
-              className="h-8 w-24 md:h-12 md:w-32 object-contain transition-all duration-300"
-            />
-          ))}
+        <div className="relative overflow-hidden w-full">
+          <motion.div
+            className="flex items-center gap-8 md:gap-12 grayscale py-6 md:py-8 px-4"
+            animate={{
+              x: ["-50%", "0%"],
+            }}
+            transition={{
+              x: {
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+                repeatType: "mirror",
+              },
+            }}
+          >
+            {/* Double the logos for seamless loop */}
+            {[...Array(2)].map((_, set) => (
+              <div
+                key={set}
+                className="flex items-center gap-8 md:gap-12 shrink-0"
+              >
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <motion.img
+                    key={`${set}-${i}`}
+                    whileHover={{ scale: 1.1, filter: "grayscale(0)" }}
+                    src={`/partners/partner-${i}.png`}
+                    alt={`Partner ${i} Logo`}
+                    className="h-6 w-20 md:h-8 md:w-24 lg:h-12 lg:w-32 object-contain transition-all duration-300"
+                  />
+                ))}
+              </div>
+            ))}
+          </motion.div>
         </div>
       </motion.div>
     </section>
