@@ -63,10 +63,18 @@ export const updateRestaurant = async (
 
     // Now proceed with the update
     // Define allowed fields for update
-    const allowedFields = ["name", "email", "phone", "address", "slug", "settings", "subscription"];
+    const allowedFields = [
+      "name",
+      "email",
+      "phone",
+      "address",
+      "slug",
+      "settings",
+      "subscription",
+    ];
     const sanitizedBody = Object.keys(req.body)
-      .filter(key => allowedFields.includes(key))
-      .reduce((obj, key) => {
+      .filter((key) => allowedFields.includes(key))
+      .reduce<Record<string, any>>((obj, key) => {
         obj[key] = req.body[key];
         return obj;
       }, {});

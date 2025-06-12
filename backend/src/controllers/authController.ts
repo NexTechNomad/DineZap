@@ -10,7 +10,9 @@ export const registerRestaurant = async (
   try {
     const { name, email, password, phone, address } = req.body;
 
-    const existingRestaurant = await Restaurant.findOne({ email });
+    const existingRestaurant = await Restaurant.findOne({
+      email: { $eq: email },
+    });
     if (existingRestaurant) {
       res.status(400).json({ message: "Restaurant already exists" });
       return;
