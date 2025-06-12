@@ -12,7 +12,7 @@ const HowItWorksSection: React.FC = () => {
     {
       title: "Scan the Table QR",
       description:
-        "Open your phone's camera and point it at the QR code sticker on your table. No app download needed, just scan and go!",
+        "Open your phone's camera and point it at the QRCode sticker on your table. No app download needed, just scan and go!",
       image: "/how-it-works/rafiki.png",
     },
     {
@@ -24,7 +24,7 @@ const HowItWorksSection: React.FC = () => {
     {
       title: "Pay Instantly",
       description:
-        "Securely pay with your preferred payment method, like paystack, credit cards, or bank transfer. Get instant confirmation and relax while your order is prepared!",
+        "Securely pay with your preferred payment method, like paystack or bank transfer. Get instant confirmation and relax while your order is prepared!",
       image: "/how-it-works/cuate.png",
     },
   ];
@@ -154,7 +154,8 @@ const HowItWorksSection: React.FC = () => {
                 <img
                   src={step.image}
                   alt={step.title}
-                  className="w-full max-w-[300px] mx-auto h-auto"
+                  className="w-auto max-h-[170px] mx-auto object-contain"
+                  loading="lazy"
                 />
               </motion.div>
 

@@ -176,18 +176,21 @@ export default function HeroSection() {
                 whileHover={{ scale: 1.1 }}
                 className="h-6 w-6 md:h-8 md:w-8 rounded-full ring-2 ring-background"
                 src="/avatars/avatar-1.jpg"
+                loading="lazy"
                 alt="Customer 1"
               />
               <motion.img
                 whileHover={{ scale: 1.1 }}
                 className="h-6 w-6 md:h-8 md:w-8 rounded-full ring-2 ring-background"
                 src="/avatars/avatar-2.jpg"
+                loading="lazy"
                 alt="Customer 2"
               />
               <motion.img
                 whileHover={{ scale: 1.1 }}
                 className="h-6 w-6 md:h-8 md:w-8 rounded-full ring-2 ring-background"
                 src="/avatars/avatar-3.jpg"
+                loading="lazy"
                 alt="Customer 3"
               />
             </div>
@@ -241,6 +244,7 @@ export default function HeroSection() {
           >
             <img
               src="/assets/hero-img.png"
+              loading="lazy"
               alt="Happy customer enjoying pizza with various food items"
               className="h-full w-full object-contain"
             />
@@ -285,6 +289,7 @@ export default function HeroSection() {
                     key={`${set}-${i}`}
                     whileHover={{ scale: 1.1, filter: "grayscale(0)" }}
                     src={`/partners/partner-${i}.png`}
+                    loading="lazy"
                     alt={`Partner ${i} Logo`}
                     className="h-6 w-20 md:h-8 md:w-24 lg:h-12 lg:w-32 object-contain transition-all duration-300"
                   />

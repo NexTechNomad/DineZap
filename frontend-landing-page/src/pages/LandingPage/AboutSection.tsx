@@ -172,6 +172,7 @@ const AboutSection: React.FC = () => {
                 ease: "easeInOut",
               }}
               src="/about/about.png"
+              loading="lazy"
               alt="Modern restaurant interior"
               className="w-full h-auto"
             />
