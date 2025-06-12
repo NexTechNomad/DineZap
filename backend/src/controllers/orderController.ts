@@ -19,14 +19,20 @@ export const createOrder = async (
       customerPhone,
       specialInstructions,
     } = req.body;
-    const restaurant = await Restaurant.findOne({ slug: restaurantSlug });
+    if (typeof restaurantSlug !== "string" || !restaurantSlug) {
+      res.status(400).json({ message: "Invalid restaurant slug" });
+      return;
+    }
+    const restaurant = await Restaurant.findOne({
+      slug: { $eq: restaurantSlug },
+    });
     if (!restaurant) {
       res.status(404).json({ message: "Restaurant not found" });
       return;
     }
     const table = await Table.findOne({
-      restaurantId: restaurant._id,
-      tableNumber,
+      restaurantId: { $eq: restaurant._id },
+      tableNumber: { $eq: tableNumber },
     });
     if (!table) {
       res.status(404).json({ message: "Table not found" });
@@ -58,7 +64,11 @@ export const createOrder = async (
 export const getOrder = async (req: Request, res: Response): Promise<void> => {
   try {
     const { orderId } = req.params;
-    const order = await Order.findOne({ orderId });
+    if (typeof orderId !== "string" || !orderId) {
+      res.status(400).json({ message: "Invalid order ID" });
+      return;
+    }
+    const order = await Order.findOne({ orderId: { $eq: orderId } });
     if (!order) {
       res.status(404).json({ message: "Order not found" });
       return;

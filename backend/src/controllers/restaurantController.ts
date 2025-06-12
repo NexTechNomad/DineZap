@@ -10,7 +10,11 @@ export const getRestaurantBySlug = async (
 ): Promise<void> => {
   try {
     const { slug } = req.params;
-    const restaurant = await Restaurant.findOne({ slug });
+    if (typeof slug !== "string" || !slug) {
+      res.status(400).json({ message: "Invalid slug" });
+      return;
+    }
+    const restaurant = await Restaurant.findOne({ slug: { $eq: slug } });
     if (!restaurant) {
       res.status(404).json({ message: "Restaurant not found" });
       return;
