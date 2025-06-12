@@ -57,7 +57,11 @@ export const trackOrder = async (
 ): Promise<void> => {
   try {
     const { orderId } = req.body;
-    const order = await Order.findOne({ orderId }).populate(
+    if (typeof orderId !== "string" || !orderId.match(/^[a-fA-F0-9]{24}$/)) {
+      res.status(400).json({ message: "Invalid order ID" });
+      return;
+    }
+    const order = await Order.findOne({ orderId: { $eq: orderId } }).populate(
       "restaurantId",
       "name slug"
     );
