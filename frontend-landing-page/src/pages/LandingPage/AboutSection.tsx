@@ -97,7 +97,7 @@ const AboutSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-white relative overflow-hidden">
+    <section id="about" className="py-16 bg-white relative overflow-hidden">
       <div ref={containerRef} className="absolute inset-0 -z-10" />
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

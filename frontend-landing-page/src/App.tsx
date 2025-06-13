@@ -3,6 +3,8 @@ import HeroSection from "@/pages/LandingPage/HeroSection";
 import Navbar from "@/components/navbar/navbar";
 import AboutSection from "@/pages/LandingPage/AboutSection";
 import HowItWorksSection from "@/pages/LandingPage/HowItWorksSection";
+import FAQSection from "@/pages/LandingPage/FAQSection";
+import Footer from "@/components/footer/footer";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <HeroSection />
         <AboutSection />
         <HowItWorksSection />
+        <FAQSection />
+        <Footer />
       </main>
     </BrowserRouter>
   );

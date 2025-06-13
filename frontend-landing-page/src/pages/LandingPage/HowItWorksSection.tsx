@@ -118,7 +118,10 @@ const HowItWorksSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
+    <section
+      id="how-to-use"
+      className="py-20 bg-white relative overflow-hidden"
+    >
       <div ref={containerRef} className="absolute inset-0 -z-10" />
       <div className="container mx-auto px-4">
         <motion.div

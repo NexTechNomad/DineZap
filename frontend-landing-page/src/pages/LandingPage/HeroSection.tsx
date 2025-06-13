@@ -100,7 +100,10 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="mt-16 md:mt-20 relative min-h-[90vh] w-full overflow-hidden bg-white px-4 py-8 md:py-12 md:px-8 lg:px-12">
+    <section
+      id="home"
+      className="mt-16 md:mt-20 relative min-h-[90vh] w-full overflow-hidden bg-white px-4 py-8 md:py-12 md:px-8 lg:px-12"
+    >
       <div ref={containerRef} className="absolute inset-0 -z-10" />
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-2">
         {/* Left Content */}
