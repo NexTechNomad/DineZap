@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +17,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSignup = () => {
+    navigate("/auth/get-started");
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav
@@ -106,7 +113,10 @@ const Navbar = () => {
         >
           Login
         </Button>
-        <Button className="bg-main-darkPurple text-white hover:bg-main-darkPurple/70 text-sm lg:text-base">
+        <Button
+          className="bg-main-darkPurple text-white hover:bg-main-darkPurple/70 text-sm lg:text-base"
+          onClick={handleSignup}
+        >
           Sign up
         </Button>
       </div>
@@ -174,7 +184,10 @@ const Navbar = () => {
               >
                 Login
               </Button>
-              <Button className="bg-main-darkPurple text-white hover:bg-main-darkPurple/70 w-full justify-center">
+              <Button
+                className="bg-main-darkPurple text-white hover:bg-main-darkPurple/70 w-full justify-center"
+                onClick={handleSignup}
+              >
                 Sign up
               </Button>
             </div>

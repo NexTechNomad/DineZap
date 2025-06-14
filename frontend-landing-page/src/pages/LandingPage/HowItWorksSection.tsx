@@ -130,11 +130,11 @@ const HowItWorksSection: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16 flex flex-col items-center gap-4"
         >
-          <div className="w-32 h-0.5 bg-main-darkPurple/70"></div>
+          <div className="w-[17rem] h-0.5 bg-main-darkPurple/70"></div>
           <h2 className="text-4xl font-medium tracking-[0.2rem]">
             HOW IT WORKS
           </h2>
-          <div className="w-32 h-0.5 bg-main-darkPurple/70"></div>
+          <div className="w-[17rem] h-0.5 bg-main-darkPurple/70"></div>
           <p className="text-2xl text-purple-700 font-light tracking-[0.1rem]">
             SEAMLESS DINING IN JUST 3 SIMPLE STEPS.
           </p>
