@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
-const RestaurantSignIn = () => {
+const IndividualSignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -95,7 +95,7 @@ const RestaurantSignIn = () => {
         <div className="mt-8 text-center text-sm text-gray-600">
           Don't have an account?
           <Link
-            to="/auth/signup/restaurant"
+            to="/auth/signup/individual"
             className="text-purple-600 hover:text-purple-700 font-semibold ml-1"
           >
             Sign Up
@@ -106,4 +106,4 @@ const RestaurantSignIn = () => {
   );
 };
 
-export default RestaurantSignIn;
+export default IndividualSignIn;

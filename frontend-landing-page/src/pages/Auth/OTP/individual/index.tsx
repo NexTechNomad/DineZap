@@ -78,7 +78,7 @@ const RestaurantOTP = () => {
 
         <div className="mt-4 text-center">
           <Link
-            to="/auth/login/restaurant"
+            to="/auth/login/individual"
             className="text-purple-600 hover:text-purple-700 text-sm"
           >
             ← Back to Login

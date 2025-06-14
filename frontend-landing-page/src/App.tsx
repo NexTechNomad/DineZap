@@ -7,13 +7,20 @@ import FAQSection from "@/pages/LandingPage/FAQSection";
 import Footer from "@/components/footer/footer";
 import GetStarted from "@/pages/Auth/GetStarted";
 import RestaurantSignUp from "@/pages/Auth/SignUp/restaurant";
+import IndividualSignUp from "@/pages/Auth/SignUp/individual";
 import RestaurantLogin from "@/pages/Auth/SignIn/restaurant";
-import OTP from "@/pages/Auth/OTP/restaurant";
+import IndividualSignin from "@/pages/Auth/SignIn/individual";
+import OTPRestaurant from "@/pages/Auth/OTP/restaurant";
+import OTPIndividual from "@/pages/Auth/OTP/individual";
 import PricingPage from "@/pages/PricingPage";
+import Dashboard from "@/pages/Dashboard";
 
 const AppContent = () => {
   const location = useLocation();
-  const showNavbar = !location.pathname.startsWith("/auth/") && location.pathname !== "/pricing";
+  const showNavbar =
+    !location.pathname.startsWith("/auth/") &&
+    location.pathname !== "/pricing" &&
+    !location.pathname.startsWith("/dashboard");
 
   return (
     <main className="min-h-screen">
@@ -33,9 +40,13 @@ const AppContent = () => {
         />
         <Route path="/auth/get-started" element={<GetStarted />} />
         <Route path="/auth/signup/restaurant" element={<RestaurantSignUp />} />
+        <Route path="/auth/signup/individual" element={<IndividualSignUp />} />
         <Route path="/auth/login/restaurant" element={<RestaurantLogin />} />
-        <Route path="/auth/otp/restaurant" element={<OTP />} />
+        <Route path="/auth/login/individual" element={<IndividualSignin />} />
+        <Route path="/auth/otp/restaurant" element={<OTPRestaurant />} />
+        <Route path="/auth/otp/individual" element={<OTPIndividual />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/dashboard/*" element={<Dashboard />} />
       </Routes>
     </main>
   );

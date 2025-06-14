@@ -23,6 +23,11 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  const handleLogin = () => {
+    navigate("/auth/login/restaurant");
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav
       className={`w-full py-1 px-4 md:px-12 flex items-center justify-between fixed top-0 z-50 transition-all duration-300 ${
@@ -110,6 +115,7 @@ const Navbar = () => {
         <Button
           variant="ghost"
           className="border-none hover:bg-transparent hover:text-main-purple text-sm lg:text-base"
+          onClick={handleLogin}
         >
           Login
         </Button>
@@ -181,6 +187,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 className="border-none hover:bg-white/50 w-full justify-center"
+                onClick={handleLogin}
               >
                 Login
               </Button>
