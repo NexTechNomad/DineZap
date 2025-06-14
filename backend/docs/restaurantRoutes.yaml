@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Restaurant API
+  version: 1.0.0
+  description: API endpoints for managing restaurants
+paths:
+  /restaurants/{slug}:
+    get:
+      summary: Get restaurant by slug
+      tags: [Restaurant]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "tasty-bistro"
+      responses:
+        "200":
+          description: Restaurant details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Restaurant"
+        "404":
+          description: Restaurant not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /restaurants/{id}:
+    put:
+      summary: Update restaurant
+      tags: [Restaurant]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRestaurantRequest"
+      responses:
+        "200":
+          description: Restaurant updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Restaurant updated" }
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /restaurants/{id}/analytics:
+    get:
+      summary: Get restaurant analytics
+      tags: [Restaurant]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      responses:
+        "200":
+          description: Restaurant analytics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantAnalytics"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /restaurants/{id}/tables:
+    post:
+      summary: Create tables
+      tags: [Restaurant]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTablesRequest"
+      responses:
+        "201":
+          description: Tables created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Tables created" }
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    Restaurant:
+      type: object
+      properties:
+        id: { type: string, example: "rest_123" }
+        name: { type: string, example: "Tasty Bistro" }
+        email:
+          { type: string, format: email, example: "contact@tastybistro.com" }
+        slug: { type: string, example: "tasty-bistro" }
+      required: [id, name, email, slug]
+    UpdateRestaurantRequest:
+      type: object
+      properties:
+        name: { type: string, example: "Tasty Bistro" }
+        email:
+          { type: string, format: email, example: "contact@tastybistro.com" }
+      required: []
+    RestaurantAnalytics:
+      type: object
+      properties:
+        totalOrders: { type: integer, example: 100 }
+        totalRevenue: { type: number, example: 2999.99 }
+        averageOrderValue: { type: number, example: 29.99 }
+      required: [totalOrders, totalRevenue]
+    CreateTablesRequest:
+      type: object
+      properties:
+        count: { type: integer, example: 10 }
+      required: [count]
+    ErrorResponse:
+      type: object
+      properties:
+        message: { type: string, example: "Unauthorized" }
+        errors:
+          {
+            type: array,
+            items: { type: string },
+            example: ["Invalid restaurant ID"],
+          }
+      required: [message]
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

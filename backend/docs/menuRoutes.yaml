@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Menu API
+  version: 1.0.0
+  description: API endpoints for managing menus
+paths:
+  /menus/{slug}/menu:
+    get:
+      summary: Get public menu
+      tags: [Menu]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "tasty-bistro"
+      responses:
+        "200":
+          description: Public menu retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "404":
+          description: Restaurant not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /menus/{id}/menu/admin:
+    get:
+      summary: Get admin menu
+      tags: [Menu]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      responses:
+        "200":
+          description: Admin menu retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /menus/{id}/menu:
+    put:
+      summary: Update menu
+      tags: [Menu]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMenuRequest"
+      responses:
+        "200":
+          description: Menu updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Menu updated" }
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /menus/{id}/menu/items:
+    post:
+      summary: Add menu item
+      tags: [Menu]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMenuItemRequest"
+      responses:
+        "201":
+          description: Menu item added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Menu item added" }
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /menus/{id}/menu/items/{itemId}:
+    put:
+      summary: Update menu item
+      tags: [Menu]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "item_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMenuItemRequest"
+      responses:
+        "200":
+          description: Menu item updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Menu item updated" }
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete menu item
+      tags: [Menu]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "rest_123"
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "item_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteMenuItemRequest"
+      responses:
+        "200":
+          description: Menu item deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Menu item deleted" }
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    MenuItem:
+      type: object
+      properties:
+        id: { type: string, example: "item_123" }
+        name: { type: string, example: "Burger" }
+        price: { type: number, example: 9.99 }
+        description: { type: string, example: "Juicy beef burger" }
+      required: [id, name, price]
+    MenuCategory:
+      type: object
+      properties:
+        name: { type: string, example: "Main Course" }
+        items: { type: array, items: { $ref: "#/components/schemas/MenuItem" } }
+      required: [name, items]
+    Menu:
+      type: object
+      properties:
+        categories:
+          { type: array, items: { $ref: "#/components/schemas/MenuCategory" } }
+      required: [categories]
+    UpdateMenuRequest:
+      type: object
+      properties:
+        categories:
+          { type: array, items: { $ref: "#/components/schemas/MenuCategory" } }
+      required: [categories]
+    AddMenuItemRequest:
+      type: object
+      properties:
+        categoryName: { type: string, example: "Main Course" }
+        item: { $ref: "#/components/schemas/MenuItem" }
+      required: [categoryName, item]
+    UpdateMenuItemRequest:
+      type: object
+      properties:
+        name: { type: string, example: "Updated Burger" }
+        price: { type: number, example: 10.99 }
+        description: { type: string, example: "Updated juicy beef burger" }
+      required: []
+    DeleteMenuItemRequest:
+      type: object
+      properties:
+        categoryName: { type: string, example: "Main Course" }
+      required: [categoryName]
+    ErrorResponse:
+      type: object
+      properties:
+        message: { type: string, example: "Validation error" }
+        errors:
+          {
+            type: array,
+            items: { type: string },
+            example: ["Invalid category name"],
+          }
+      required: [message]
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: Subscription API
+  version: 1.0.0
+  description: API endpoints for managing restaurant subscriptions
+paths:
+  /subscription/activate:
+    post:
+      summary: Activate a subscription
+      tags: [Subscription]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivateSubscriptionRequest"
+      responses:
+        "200":
+          description: Subscription activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /subscription/verify:
+    post:
+      summary: Verify payment
+      tags: [Subscription]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPaymentRequest"
+      responses:
+        "200":
+          description: Payment verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /subscription/status:
+    get:
+      summary: Get subscription status
+      tags: [Subscription]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Subscription status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    Subscription:
+      type: object
+      properties:
+        status:
+          {
+            type: string,
+            enum: ["active", "inactive", "pending"],
+            example: "active",
+          }
+        planId: { type: string, example: "plan_123" }
+        startDate:
+          { type: string, format: date-time, example: "2025-06-14T23:55:00Z" }
+        endDate:
+          { type: string, format: date-time, example: "2026-06-14T23:55:00Z" }
+      required: [status, planId]
+    ActivateSubscriptionRequest:
+      type: object
+      properties:
+        planId: { type: string, example: "plan_123" }
+      required: [planId]
+    VerifyPaymentRequest:
+      type: object
+      properties:
+        paymentId: { type: string, example: "pay_123" }
+      required: [paymentId]
+    SubscriptionResponse:
+      type: object
+      properties:
+        message: { type: string, example: "Subscription activated" }
+      required: [message]
+    ErrorResponse:
+      type: object
+      properties:
+        message: { type: string, example: "Unauthorized" }
+        errors:
+          {
+            type: array,
+            items: { type: string },
+            example: ["Invalid paymentId"],
+          }
+      required: [message]
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
